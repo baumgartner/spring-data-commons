@@ -500,7 +500,7 @@ public abstract class RepositoryFactorySupport implements BeanClassLoaderAware {
 			return result;
 		}
 	}
-	
+
 	/**
 	 * {@link RepositoryProxyPostProcessor} registering an {@link ExposeInvocationInterceptor} to make the repository
 	 * level method invocation available to the infrastructure.
@@ -513,9 +513,10 @@ public abstract class RepositoryFactorySupport implements BeanClassLoaderAware {
 
 		/* 
 		 * (non-Javadoc)
-		 * @see org.springframework.data.repository.core.support.RepositoryProxyPostProcessor#postProcess(org.springframework.aop.framework.ProxyFactory, java.lang.Object)
+		 * @see org.springframework.data.repository.core.support.RepositoryProxyPostProcessor#postProcess(org.springframework.aop.framework.ProxyFactory, org.springframework.data.repository.core.RepositoryInformation)
 		 */
-		public void postProcess(ProxyFactory factory) {
+		@Override
+		public void postProcess(ProxyFactory factory, RepositoryInformation repositoryInformation) {
 			factory.addAdvice(ExposeInvocationInterceptor.INSTANCE);
 		}
 	}
@@ -543,7 +544,7 @@ public abstract class RepositoryFactorySupport implements BeanClassLoaderAware {
 
 			if (invocation instanceof ReflectiveMethodInvocation) {
 				Advised proxy = (Advised) ((ReflectiveMethodInvocation) invocation).getProxy();
-				return Arrays.asList((Class<?>[]) proxy.getProxiedInterfaces());
+				return Arrays.asList(proxy.getProxiedInterfaces());
 			}
 
 			return Collections.<Class<?>> singletonList(getMethodInvocation().getThis().getClass());
